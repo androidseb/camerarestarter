@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Camera Restarter</string>
+    <string name="use_at_your_own_risks_caps">USE AT YOUR OWN RISKS!!!\nclick the help button for details</string>
+    <string name="restart_camera">Restart camera</string>
+    <string name="camera_restared_successfully">Camera restarted successfully!</string>
+    <string name="camera_restart_failed">Camera restart failed: %s</string>
+    <string name="ok">OK</string>
+    <string name="help">Help</string>
+    <string name="help_message">"This app requires your phone to be rooted, otherwise it will not work. If you don't know what a rooted phone is, ask Google :-)\n\nThis app is meant for people encountering the error message \"can't connect to camera\". Usually when getting this error message, the only solution for using the camera again is to restart the phone.\n\nThis app allows to restart the camera individually without needing to restart the phone.\n\nThis app uses root permission to kill the process named 'media' ('/system/bin/mediaserver').\n\nI published this app with the hope that it would be helpful, however I do not know what the consequences of killing the 'media' process are, I just know that it solved my problem.\n\nUSE AT YOUR OWN RISK!!!"</string>
+</resources>
