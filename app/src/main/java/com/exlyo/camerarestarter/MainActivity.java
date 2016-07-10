@@ -1,19 +1,24 @@
 package com.exlyo.camerarestarter;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.Toast;
+
+import com.exlyo.camerarestarter.privatedata.AppPrivateData;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -23,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
 	private static final String PREFS_FILE_NAME = "camera_restarter_prefs";
 	private static final String PREF_KEY_CAMERA_AUTO_LAUNCH = "camera_auto_launch";
 
+	private AdView mAdView;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -30,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
 		findViewById(R.id.restart_camera_button).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(final View v) {
+				MainActivity.logEvent(MainActivity.this, "RESTART_ACTION_BUTTON");
 				restartButtonAction(MainActivity.this);
 			}
 		});
@@ -41,12 +49,25 @@ public class MainActivity extends AppCompatActivity {
 				MainActivity.setAutoCameraLaunchEnabled(MainActivity.this, autoLaunchCheckBox.isChecked());
 			}
 		});
-		findViewById(R.id.help_button).setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(final View v) {
-				showMessageDialog(MainActivity.this, getString(R.string.help_message));
-			}
-		});
+
+		if (AppPrivateData.hasFireBaseData) {
+			final ViewGroup adContainer = (ViewGroup) findViewById(R.id.ad_container);
+			adContainer.setVisibility(View.VISIBLE);
+			// Initialize the Mobile Ads SDK.
+			MobileAds.initialize(this, AppPrivateData.adMobAppId);
+			MobileAds.setAppMuted(true);
+			mAdView = new AdView(this);
+			mAdView.setAdSize(AdSize.SMART_BANNER);
+			mAdView.setAdUnitId(AppPrivateData.adUnitId);
+			adContainer
+				.addView(mAdView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+			// Create an ad request. Check your logcat output for the hashed device ID to
+			// get test ads on a physical device. e.g.
+			// "Use AdRequest.Builder.addTestDevice("ABCDEF012345") to get test ads on this device."
+			final AdRequest adRequest = new AdRequest.Builder().build();
+			// Start loading the ad in the background.
+			mAdView.loadAd(adRequest);
+		}
 	}
 
 	public static void restartButtonAction(final Context _context) {
@@ -140,16 +161,34 @@ public class MainActivity extends AppCompatActivity {
 		}
 	}
 
-	private static void showMessageDialog(@NonNull final Activity _activity, final String _messageText) {
-		_activity.runOnUiThread(new Runnable() {
-			@Override
-			public void run() {
-				final AlertDialog.Builder builder = new AlertDialog.Builder(_activity);
-				builder.setMessage(_messageText);
-				builder.setPositiveButton(R.string.ok, null);
-				final AlertDialog dialog = builder.create();
-				dialog.show();
-			}
-		});
+	@Override
+	protected void onPause() {
+		if (mAdView != null) {
+			mAdView.pause();
+		}
+		super.onPause();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		if (mAdView != null) {
+			mAdView.resume();
+		}
+	}
+
+	@Override
+	protected void onDestroy() {
+		if (mAdView != null) {
+			mAdView.destroy();
+		}
+		super.onDestroy();
+	}
+
+	public static void logEvent(final Context _context, final String _eventName) {
+		if (!AppPrivateData.hasFireBaseData) {
+			return;
+		}
+		com.google.firebase.analytics.FirebaseAnalytics.getInstance(_context).logEvent(_eventName, new Bundle());
 	}
 }

@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.RemoteViews;
 
+import com.exlyo.camerarestarter.privatedata.AppPrivateData;
+
 //Thank you George Mathew for your code I copy pasted in onUpdate() :-)
 //http://wptrafficanalyzer.in/blog/android-home-screen-app-widget-with-onclick-event/
 public class CameraRestartWidget extends AppWidgetProvider {
@@ -45,6 +47,7 @@ public class CameraRestartWidget extends AppWidgetProvider {
 	public void onReceive(final Context _context, final Intent _intent) {
 		super.onReceive(_context, _intent);
 		if (WIDGET_ACTION.equals(_intent.getAction())) {
+			MainActivity.logEvent(_context, "RESTART_ACTION_WIDGET");
 			MainActivity.restartButtonAction(_context);
 		}
 	}

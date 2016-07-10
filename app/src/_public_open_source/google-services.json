@@ -1,0 +1,50 @@
+{
+  "project_info": {
+    "project_number": "PRIVATE_DATA",
+    "firebase_url": "PRIVATE_DATA",
+    "project_id": "PRIVATE_DATA",
+    "storage_bucket": "PRIVATE_DATA"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "PRIVATE_DATA",
+        "android_client_info": {
+          "package_name": "com.exlyo.camerarestarter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "PRIVATE_DATA",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.exlyo.camerarestarter",
+            "certificate_hash": "PRIVATE_DATA"
+          }
+        },
+        {
+          "client_id": "PRIVATE_DATA",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "PRIVATE_DATA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
