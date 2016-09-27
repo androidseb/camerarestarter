@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
 		}
 	}
 
-	private static void showToastMessage(@NonNull final Context _context, final String _messageText) {
+	public static void showToastMessage(@NonNull final Context _context, final String _messageText) {
 		final Runnable showToastRunnable = new Runnable() {
 			@Override
 			public void run() {
