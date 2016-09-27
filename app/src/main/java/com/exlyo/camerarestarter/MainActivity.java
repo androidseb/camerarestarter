@@ -27,6 +27,7 @@ import java.io.InputStreamReader;
 public class MainActivity extends AppCompatActivity {
 	private static final String PREFS_FILE_NAME = "camera_restarter_prefs";
 	private static final String PREF_KEY_CAMERA_AUTO_LAUNCH = "camera_auto_launch";
+	private static final String PREF_KEY_AUTO_CAMERA_ACTION = "auto_camera_action";
 
 	private AdView mAdView;
 
@@ -47,6 +48,14 @@ public class MainActivity extends AppCompatActivity {
 			@Override
 			public void onCheckedChanged(final CompoundButton buttonView, final boolean isChecked) {
 				MainActivity.setAutoCameraLaunchEnabled(MainActivity.this, autoLaunchCheckBox.isChecked());
+			}
+		});
+		final CheckBox autoCameraActionCheckBox = (CheckBox) findViewById(R.id.auto_camera_action_checkbox);
+		autoCameraActionCheckBox.setChecked(MainActivity.isAutoCameraActionEnabled(this));
+		autoCameraActionCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(final CompoundButton buttonView, final boolean isChecked) {
+				MainActivity.setAutoCameraActionEnabled(MainActivity.this, autoCameraActionCheckBox.isChecked());
 			}
 		});
 
@@ -95,6 +104,19 @@ public class MainActivity extends AppCompatActivity {
 		final SharedPreferences sharedPreferences = _context.getSharedPreferences(PREFS_FILE_NAME, MODE_PRIVATE);
 		final SharedPreferences.Editor edit = sharedPreferences.edit();
 		edit.putBoolean(PREF_KEY_CAMERA_AUTO_LAUNCH, _enabled);
+		edit.commit();
+	}
+
+	public synchronized static boolean isAutoCameraActionEnabled(final Context _context) {
+		final SharedPreferences sharedPreferences = _context.getSharedPreferences(PREFS_FILE_NAME, MODE_PRIVATE);
+		return sharedPreferences.getBoolean(PREF_KEY_AUTO_CAMERA_ACTION, false);
+	}
+
+	@SuppressLint("CommitPrefEdits")
+	private synchronized static void setAutoCameraActionEnabled(final Context _context, final boolean _enabled) {
+		final SharedPreferences sharedPreferences = _context.getSharedPreferences(PREFS_FILE_NAME, MODE_PRIVATE);
+		final SharedPreferences.Editor edit = sharedPreferences.edit();
+		edit.putBoolean(PREF_KEY_AUTO_CAMERA_ACTION, _enabled);
 		edit.commit();
 	}
 

@@ -30,6 +30,12 @@
                 android:layout_height="wrap_content"
                 android:text="@string/restart_camera"/>
 
+            <CheckBox
+                android:id="@+id/auto_camera_action_checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/auto_restart_camera_action"/>
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
