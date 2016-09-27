@@ -36,6 +36,18 @@
                 android:layout_height="wrap_content"
                 android:text="@string/auto_restart_camera_action"/>
 
+            <Button
+                android:id="@+id/open_close_notification_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/open_clickable_notification"/>
+
+            <CheckBox
+                android:id="@+id/open_notification_on_system_start_checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/open_notification_on_system_start"/>
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

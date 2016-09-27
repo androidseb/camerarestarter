@@ -14,6 +14,7 @@ public class RunCameraRestartActivity extends AppCompatActivity {
 	protected void onResume() {
 		super.onResume();
 		if (MainActivity.isAutoCameraActionEnabled(this)) {
+			MainActivity.logEvent(RunCameraRestartActivity.this, "RESTART_ACTION_ACTIVITY");
 			MainActivity.restartButtonAction(this);
 		} else {
 			MainActivity.showToastMessage(this, getString(R.string.auto_restart_camera_action_disabled_toast));

@@ -6,6 +6,7 @@
     <!-- Include required permissions for Google Mobile Ads to run-->
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <application
         android:allowBackup="false"
@@ -50,6 +51,14 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/camera_restart_widget"/>
+        </receiver>
+        <service android:name=".NotificationClickIntentService"/>
+        <receiver
+            android:name=".BootEventReceiver"
+            android:label="BootEventReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
         </receiver>
     </application>
 </manifest>

@@ -11,4 +11,9 @@
     <string name="auto_restart_camera_action_disabled_toast">\"Auto restart camera action\" is disabled, opening app settings instead.</string>
     <string name="camera_restarter_launcher">Camera Restarter launcher</string>
     <string name="camera_restarter_settings">Camera Restarter settings</string>
+    <string name="open_clickable_notification">Open clickable notification</string>
+    <string name="close_clickable_notification">Close clickable notification</string>
+    <string name="open_notification_on_system_start">Open notification on system start</string>
+    <string name="click_to_restart_camera">Restart camera</string>
+    <string name="click_to_restart_camera_last_restart_at">Restart camera (last at %s)</string>
 </resources>

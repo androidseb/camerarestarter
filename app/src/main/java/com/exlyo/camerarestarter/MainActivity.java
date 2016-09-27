@@ -1,17 +1,21 @@
 package com.exlyo.camerarestarter;
 
 import android.annotation.SuppressLint;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.exlyo.camerarestarter.privatedata.AppPrivateData;
@@ -28,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
 	private static final String PREFS_FILE_NAME = "camera_restarter_prefs";
 	private static final String PREF_KEY_CAMERA_AUTO_LAUNCH = "camera_auto_launch";
 	private static final String PREF_KEY_AUTO_CAMERA_ACTION = "auto_camera_action";
+	private static final String PREF_KEY_SYSTEM_START_NOTIFICATION = "system_start_notification";
 
 	private AdView mAdView;
 
@@ -59,6 +64,25 @@ public class MainActivity extends AppCompatActivity {
 			}
 		});
 
+		final TextView openCloseNotificationButton = (TextView) findViewById(R.id.open_close_notification_button);
+		updateOpenCloseNotificationButtonText(openCloseNotificationButton);
+		openCloseNotificationButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(final View v) {
+				openClickableNotification(MainActivity.this, null);
+				updateOpenCloseNotificationButtonText(openCloseNotificationButton);
+			}
+		});
+
+		final CheckBox openNotificationOnSystemStartCheckbox = (CheckBox) findViewById(R.id.open_notification_on_system_start_checkbox);
+		openNotificationOnSystemStartCheckbox.setChecked(MainActivity.isSystemStartNotificationEnabled(this));
+		openNotificationOnSystemStartCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(final CompoundButton buttonView, final boolean isChecked) {
+				MainActivity.setSystemStartNotificationEnabled(MainActivity.this, openNotificationOnSystemStartCheckbox.isChecked());
+			}
+		});
+
 		if (AppPrivateData.hasFireBaseData) {
 			final ViewGroup adContainer = (ViewGroup) findViewById(R.id.ad_container);
 			adContainer.setVisibility(View.VISIBLE);
@@ -79,18 +103,61 @@ public class MainActivity extends AppCompatActivity {
 		}
 	}
 
+	private static void updateOpenCloseNotificationButtonText(final TextView _openCloseNotificationButton) {
+		if (notificationOpen) {
+			_openCloseNotificationButton.setText(R.string.close_clickable_notification);
+		} else {
+			_openCloseNotificationButton.setText(R.string.open_clickable_notification);
+		}
+	}
+
+	private static boolean notificationOpen = false;
+
+	public static void openClickableNotification(final Context _context, final String _lastRestartTimeString) {
+		final NotificationCompat.Builder notificationBuilder;
+
+		if (_lastRestartTimeString == null && notificationOpen) {
+			notificationBuilder = null;
+		} else {
+
+			final String notificationText;
+			if (_lastRestartTimeString == null) {
+				notificationText = _context.getString(R.string.click_to_restart_camera);
+			} else {
+				notificationText = _context.getString(R.string.click_to_restart_camera_last_restart_at, _lastRestartTimeString);
+			}
+			final int color = _context.getColor(R.color.colorPrimary);
+			notificationBuilder = new NotificationCompat.Builder(_context).setSmallIcon(R.drawable.ic_notification).setColor(
+				color)
+				.setContentTitle(_context.getString(R.string.app_name)).setContentText(notificationText).setOngoing(true)
+				.setContentIntent(PendingIntent.getService(_context, 0, new Intent(_context, NotificationClickIntentService.class), 0));
+		}
+		notificationOpen = !notificationOpen;
+
+		final NotificationManager notificationManager = (NotificationManager) _context.getSystemService(Context.NOTIFICATION_SERVICE);
+		if (notificationBuilder == null) {
+			notificationManager.cancel(0);
+		} else {
+			notificationManager.notify(0, notificationBuilder.build());
+		}
+	}
+
 	public static void restartButtonAction(final Context _context) {
 		try {
-			runRestartCameraShellCommand();
-			if (MainActivity.isAutoCameraLaunchEnabled(_context)) {
-				final Intent cameraStartIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-				cameraStartIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				_context.startActivity(cameraStartIntent);
-			}
+			restartButtonActionImpl(_context);
 			showToastMessage(_context, _context.getString(R.string.camera_restared_successfully));
 		} catch (Throwable t) {
 			t.printStackTrace();
 			showToastMessage(_context, _context.getString(R.string.camera_restart_failed, t.getMessage()));
+		}
+	}
+
+	public static void restartButtonActionImpl(final Context _context) throws Throwable {
+		runRestartCameraShellCommand();
+		if (MainActivity.isAutoCameraLaunchEnabled(_context)) {
+			final Intent cameraStartIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+			cameraStartIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			_context.startActivity(cameraStartIntent);
 		}
 	}
 
@@ -117,6 +184,19 @@ public class MainActivity extends AppCompatActivity {
 		final SharedPreferences sharedPreferences = _context.getSharedPreferences(PREFS_FILE_NAME, MODE_PRIVATE);
 		final SharedPreferences.Editor edit = sharedPreferences.edit();
 		edit.putBoolean(PREF_KEY_AUTO_CAMERA_ACTION, _enabled);
+		edit.commit();
+	}
+
+	public synchronized static boolean isSystemStartNotificationEnabled(final Context _context) {
+		final SharedPreferences sharedPreferences = _context.getSharedPreferences(PREFS_FILE_NAME, MODE_PRIVATE);
+		return sharedPreferences.getBoolean(PREF_KEY_SYSTEM_START_NOTIFICATION, false);
+	}
+
+	@SuppressLint("CommitPrefEdits")
+	private synchronized static void setSystemStartNotificationEnabled(final Context _context, final boolean _enabled) {
+		final SharedPreferences sharedPreferences = _context.getSharedPreferences(PREFS_FILE_NAME, MODE_PRIVATE);
+		final SharedPreferences.Editor edit = sharedPreferences.edit();
+		edit.putBoolean(PREF_KEY_SYSTEM_START_NOTIFICATION, _enabled);
 		edit.commit();
 	}
 
