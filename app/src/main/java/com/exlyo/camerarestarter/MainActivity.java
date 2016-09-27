@@ -171,12 +171,13 @@ public class MainActivity extends AppCompatActivity {
 			final PackageManager pm = _context.getPackageManager();
 			final ResolveInfo mInfo = pm.resolveActivity(i, 0);
 
-			final Intent intent = new Intent();
-			intent.setComponent(new ComponentName(mInfo.activityInfo.packageName, mInfo.activityInfo.name));
-			intent.setAction(Intent.ACTION_MAIN);
-			intent.addCategory(Intent.CATEGORY_LAUNCHER);
+			final Intent cameraStartIntent = new Intent();
+			cameraStartIntent.setComponent(new ComponentName(mInfo.activityInfo.packageName, mInfo.activityInfo.name));
+			cameraStartIntent.setAction(Intent.ACTION_MAIN);
+			cameraStartIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+			cameraStartIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-			_context.startActivity(intent);
+			_context.startActivity(cameraStartIntent);
 		}
 	}
 
