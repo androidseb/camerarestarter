@@ -21,7 +21,7 @@
 
         <activity
             android:name=".MainActivity"
-            android:icon="@drawable/ic_launcher_options"
+            android:icon="@drawable/ic_launcher_settings"
             android:label="@string/camera_restarter_settings"
             android:taskAffinity=".MainActivity">
             <intent-filter>
