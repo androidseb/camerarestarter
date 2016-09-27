@@ -3,11 +3,13 @@ package com.exlyo.camerarestarter;
 import android.annotation.SuppressLint;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -165,9 +167,16 @@ public class MainActivity extends AppCompatActivity {
 	public static void restartButtonActionImpl(final Context _context) throws Throwable {
 		runRestartCameraShellCommand();
 		if (MainActivity.isAutoCameraLaunchEnabled(_context)) {
-			final Intent cameraStartIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-			cameraStartIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			_context.startActivity(cameraStartIntent);
+			final Intent i = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+			final PackageManager pm = _context.getPackageManager();
+			final ResolveInfo mInfo = pm.resolveActivity(i, 0);
+
+			final Intent intent = new Intent();
+			intent.setComponent(new ComponentName(mInfo.activityInfo.packageName, mInfo.activityInfo.name));
+			intent.setAction(Intent.ACTION_MAIN);
+			intent.addCategory(Intent.CATEGORY_LAUNCHER);
+
+			_context.startActivity(intent);
 		}
 	}
 
