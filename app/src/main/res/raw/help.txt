@@ -1,0 +1,28 @@
+USE AT YOUR OWN RISKS!!! This app requires your phone to be rooted, otherwise it will not work. If you don't know what a rooted phone is, ask Google :-)
+
+This app is meant for people encountering the error message \"can't connect to camera\". Usually when getting this error message, the only solution for using the camera again is to restart the phone.
+
+This app allows to restart the camera individually without needing to restart the phone.
+
+This app uses root permission to kill the process named 'media' ('/system/bin/mediaserver').
+
+I published this app with the hope that it would be helpful, however I do not know what the consequences of killing the 'media' process are, I just know that it solved my problem.
+
+USE AT YOUR OWN RISK!!!
+
+HOW TO USE THE APP:
+The 'RESTART CAMERA' button or the app's widget or the clickable notification will start the process.
+If the 'auto launch camera' check box is checked, the process will launch the default camera app after the camera restart.
+If the 'auto restart camera action' check box is checked, the process will start automatically when opening the app shortcut called 'Camera Restarter launcher'.
+The 'open/close clickable notification' button will open/close the clickable notification.
+The 'open notification on system start' check box will open the clickable notification on system start.
+
+EXAMPLES OF HOW YOU CAN USE THE APP:
+1/ If you're using CM 11, put the widget on your lock screen: then you don't need to unlock your phone to restart the camera!
+2/ If you're using CM 13, replace the "camera" shortcut on the right with the "Camera Restarter launcher" app shortcut: then you don't need to unlock your phone to restart the camera!
+3/ Leave the 'auto launch camera' on: right after the camera restart, the default camera app is started, which means you can replace your camera app shortcut with a Camera Restarter shortcut systematically succeeding in starting the Camera.
+4/ Use the clickable notification to restart the camera while using some other app, very practical if you're using an app starting/stopping the camera a lot, resulting in frequent camera freezes.
+5/ Any other setup you see would work for you :-)
+
+IF YOU WANT THIS APP WITHOUT ADS:
+If you use the widget or the clickable notification you will never see ads, but if you really want the app without ads, the source code is available publicly (see the app's Play Store page) so you're free to build an ad-free version for yourself.

@@ -26,6 +26,8 @@ import com.google.android.gms.ads.MobileAds;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class MainActivity extends AppCompatActivity {
@@ -83,6 +85,15 @@ public class MainActivity extends AppCompatActivity {
 			}
 		});
 
+		String helpText = "";
+		try {
+			final InputStream inputStream = getResources().openRawResource(R.raw.help);
+			helpText = streamContentToString(inputStream);
+		} catch (Throwable t) {
+			t.printStackTrace();
+		}
+		((TextView) findViewById(R.id.help_instructions_textview)).setText(helpText);
+
 		if (AppPrivateData.hasFireBaseData) {
 			final ViewGroup adContainer = (ViewGroup) findViewById(R.id.ad_container);
 			adContainer.setVisibility(View.VISIBLE);
@@ -127,8 +138,7 @@ public class MainActivity extends AppCompatActivity {
 				notificationText = _context.getString(R.string.click_to_restart_camera_last_restart_at, _lastRestartTimeString);
 			}
 			final int color = _context.getColor(R.color.colorPrimary);
-			notificationBuilder = new NotificationCompat.Builder(_context).setSmallIcon(R.drawable.ic_notification).setColor(
-				color)
+			notificationBuilder = new NotificationCompat.Builder(_context).setSmallIcon(R.drawable.ic_notification).setColor(color)
 				.setContentTitle(_context.getString(R.string.app_name)).setContentText(notificationText).setOngoing(true)
 				.setContentIntent(PendingIntent.getService(_context, 0, new Intent(_context, NotificationClickIntentService.class), 0));
 		}
@@ -292,5 +302,25 @@ public class MainActivity extends AppCompatActivity {
 			return;
 		}
 		com.google.firebase.analytics.FirebaseAnalytics.getInstance(_context).logEvent(_eventName, new Bundle());
+	}
+
+	public static String streamContentToString(final InputStream _in) throws IOException {
+		final StringBuilder sb = new StringBuilder();
+
+		final BufferedReader br = new BufferedReader(new InputStreamReader(_in));
+		try {
+			String line = br.readLine();
+			while (line != null) {
+				sb.append(line);
+				line = br.readLine();
+				if (line != null) {
+					sb.append("\n");
+				}
+			}
+		} finally {
+			br.close();
+		}
+
+		return sb.toString();
 	}
 }
