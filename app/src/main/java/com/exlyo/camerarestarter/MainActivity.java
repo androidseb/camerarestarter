@@ -139,8 +139,7 @@ public class MainActivity extends AppCompatActivity {
 			} else {
 				notificationText = _context.getString(R.string.click_to_restart_camera_last_restart_at, _lastRestartTimeString);
 			}
-			final int color = _context.getColor(R.color.colorPrimary);
-			notificationBuilder = new NotificationCompat.Builder(_context).setSmallIcon(R.drawable.ic_notification).setColor(color)
+			notificationBuilder = new NotificationCompat.Builder(_context).setSmallIcon(R.drawable.ic_notification).setColor(0xFF48B7AC)
 				.setContentTitle(_context.getString(R.string.app_name)).setContentText(notificationText).setOngoing(true)
 				.setContentIntent(PendingIntent.getService(_context, 0, new Intent(_context, NotificationClickIntentService.class), 0));
 		}
