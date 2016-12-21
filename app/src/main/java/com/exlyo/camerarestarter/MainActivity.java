@@ -219,21 +219,46 @@ public class MainActivity extends AppCompatActivity {
 		edit.commit();
 	}
 
+	/**
+	 * Uses a combination of the ps, grep, tr, cut and kill commands to kill a process from a specific user, using a specific file under /system/bin/.
+	 * <p>
+	 * An example of how this would work for <code>createKillCommandForSystemBin("media", "mediaserver")</code> could be as follows.
+	 * <p>
+	 * 1/ The "ps" command returns something like this:<br>
+	 * <code>
+	 * mediacodec 230   1     54248  8148  binder_thr b6c2e1d8 S media.codec<br>
+	 * media     231   1     22560  7148  binder_thr b6b8c1d8 S /system/bin/mediadrmserver<br>
+	 * mediaex   234   1     61740  7140  binder_thr b62051d8 S media.extractor<br>
+	 * media     235   1     63852  8168  binder_thr b630f1d8 S /system/bin/mediaserver<br>
+	 * media_rw  938   157   8392   2360  inotify_re b6cf129c S /system/bin/sdcard<br>
+	 * u0_a11    23523 224   977172 42100 sys_epoll_ b5efe094 S android.process.media<br>
+	 * </code>
+	 * and the result is forwarded to the "grep" command<br>
+	 * 2/ The "grep" command gets filters all lines containing ^(linestart) followed by "media" followed by an arbitrary number of characters followed by "/system/bin/mediaserver" followed by $(end of line) and for each line, the result is forwarded to the "tr -s" command<br>
+	 * 3/ The "tr -s" command removes all duplicate spaces and the result is forwarded to the "cut -d ' ' -f2" command <br>
+	 * 4/ The "cut -d ' ' -f2" command splits the line using the space character and extracts the second field which corresponds to the matching PID of the process listed in the "ps" command<br>
+	 * 5/ The kill command uses the result to kill the PID, effectively peforming the "kill 235" command<br>
+	 *
+	 * @param _user     name of the user
+	 * @param _fileName name of the file under /system/bin
+	 * @return the command to perform for killing such a process
+	 */
+	private static String createKillCommandForSystemBin(final String _user, final String _fileName) {
+		return "kill $(ps|grep ^" + _user + ".*[/]system[/]bin[/]" + _fileName + "$|tr -s ' '|cut -d ' ' -f2);";
+	}
+
 	private static void runRestartCameraShellCommand() throws Throwable {
 		final Process p = Runtime.getRuntime().exec("su");
 		DataOutputStream os = null;
-		BufferedReader br = null;
 		try {
 			os = new DataOutputStream(p.getOutputStream());
-			br = new BufferedReader(new InputStreamReader(p.getInputStream()));
-			os.writeBytes("line=$(ps|grep media.*[/]system[/]bin[/]mediaserver)" + "\n");
-			os.writeBytes("echo ${line}" + "\n");
-			String line = br.readLine();
-			if (line.startsWith("media") && line.endsWith("/system/bin/mediaserver")) {
-				line = line.replaceAll("media[ ]*", "");
-				final int pid = Integer.parseInt(line.substring(0, line.indexOf(" ")));
-				os.writeBytes("kill " + pid + "\n");
-			}
+			//Creating the command for killing the relevant camera processes
+			final String command =
+				//Command to kill the process using the file "/system/bin/mediaserver" under the "media" user name
+				createKillCommandForSystemBin("media", "mediaserver")
+					//Command to kill the process using the file "/system/bin/cameraserver" under the "camera" user name
+					+ createKillCommandForSystemBin("camera", "cameraserver");
+			os.writeBytes(command + "\n");
 		} finally {
 			if (os != null) {
 				try {
@@ -251,11 +276,13 @@ public class MainActivity extends AppCompatActivity {
 				} catch (Throwable t) {
 					t.printStackTrace();
 				}
-			}
-
-			if (br != null) {
 				try {
-					br.close();
+					p.waitFor();
+				} catch (Throwable t) {
+					t.printStackTrace();
+				}
+				try {
+					p.destroy();
 				} catch (Throwable t) {
 					t.printStackTrace();
 				}
