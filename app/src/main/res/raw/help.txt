@@ -4,9 +4,9 @@ This app is meant for people encountering the error message \"can't connect to c
 
 This app allows to restart the camera individually without needing to restart the phone.
 
-This app uses root permission to kill the process named 'media' ('/system/bin/mediaserver').
+This app uses root permission to kill the process named '/system/bin/mediaserver' from the system user 'media' as well as the process named '/system/bin/cameraserver' from the system user 'camera'.
 
-I published this app with the hope that it would be helpful, however I do not know what the consequences of killing the 'media' process are, I just know that it solved my problem.
+I published this app with the hope that it would be helpful, however I do not know what the consequences of killing those process are, I just know that it solved my problem.
 
 USE AT YOUR OWN RISK!!!
 
