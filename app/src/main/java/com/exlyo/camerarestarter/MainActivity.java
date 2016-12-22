@@ -9,10 +9,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -31,6 +36,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 	private static final String PREFS_FILE_NAME = "camera_restarter_prefs";
@@ -98,22 +104,69 @@ public class MainActivity extends AppCompatActivity {
 
 		if (AppPrivateData.hasFireBaseData) {
 			final ViewGroup adContainer = (ViewGroup) findViewById(R.id.ad_container);
-			adContainer.setVisibility(View.VISIBLE);
-			// Initialize the Mobile Ads SDK.
-			MobileAds.initialize(this, AppPrivateData.adMobAppId);
-			MobileAds.setAppMuted(true);
-			mAdView = new AdView(this);
-			mAdView.setAdSize(AdSize.SMART_BANNER);
-			mAdView.setAdUnitId(AppPrivateData.adUnitId);
-			adContainer
-				.addView(mAdView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-			// Create an ad request. Check your logcat output for the hashed device ID to
-			// get test ads on a physical device. e.g.
-			// "Use AdRequest.Builder.addTestDevice("ABCDEF012345") to get test ads on this device."
-			final AdRequest adRequest = new AdRequest.Builder().build();
-			// Start loading the ad in the background.
-			mAdView.loadAd(adRequest);
+			new AsyncTask<Void, Void, Void>() {
+				@Override
+				protected Void doInBackground(final Void... _voids) {
+					final List<String> allOwnedItemSkus = CRBillingManager.get().getAllOwnedItemSkus(MainActivity.this);
+					if (allOwnedItemSkus != null && !allOwnedItemSkus.isEmpty()) {
+						MainActivity.this.runOnUiThread(new Runnable() {
+							@Override
+							public void run() {
+								adContainer.setVisibility(View.VISIBLE);
+								final TextView thankYouTextView = new TextView(MainActivity.this);
+								thankYouTextView.setGravity(Gravity.CENTER);
+								thankYouTextView.setText("\n" + MainActivity.this.getString(R.string.thank_you_for_your_donation) + "\n");
+								adContainer.addView(thankYouTextView,
+									new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+							}
+						});
+						return null;
+					}
+					if (MainActivity.this.isFinishing()) {
+						return null;
+					}
+					MainActivity.this.runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+							if (MainActivity.this.isFinishing()) {
+								return;
+							}
+							adContainer.setVisibility(View.VISIBLE);
+							// Initialize the Mobile Ads SDK.
+							MobileAds.initialize(MainActivity.this, AppPrivateData.adMobAppId);
+							MobileAds.setAppMuted(true);
+							mAdView = new AdView(MainActivity.this);
+							mAdView.setAdSize(AdSize.SMART_BANNER);
+							mAdView.setAdUnitId(AppPrivateData.adUnitId);
+							adContainer.addView(mAdView,
+								new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+							// Create an ad request. Check your logcat output for the hashed device ID to
+							// get test ads on a physical device. e.g.
+							// "Use AdRequest.Builder.addTestDevice("ABCDEF012345") to get test ads on this device."
+							final AdRequest adRequest = new AdRequest.Builder().build();
+							// Start loading the ad in the background.
+							mAdView.loadAd(adRequest);
+						}
+					});
+					return null;
+				}
+			}.execute();
 		}
+	}
+
+	public boolean onCreateOptionsMenu(Menu menu) {
+		final MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.main_menu, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		if (item.getItemId() != R.id.menu_item_donate) {
+			return super.onOptionsItemSelected(item);
+		}
+		CRBillingManager.actionDonate(MainActivity.this);
+		return true;
 	}
 
 	private static void updateOpenCloseNotificationButtonText(final TextView _openCloseNotificationButton) {
@@ -323,6 +376,12 @@ public class MainActivity extends AppCompatActivity {
 		if (mAdView != null) {
 			mAdView.resume();
 		}
+	}
+
+	@Override
+	protected void onActivityResult(final int _requestCode, final int _resultCode, final Intent _data) {
+		CRBillingManager.get().onActivityResult(_requestCode, _resultCode, _data);
+		super.onActivityResult(_requestCode, _resultCode, _data);
 	}
 
 	@Override

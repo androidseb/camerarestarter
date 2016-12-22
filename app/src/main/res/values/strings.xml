@@ -15,4 +15,15 @@
     <string name="open_notification_on_system_start">Open notification on system start</string>
     <string name="click_to_restart_camera">Restart camera</string>
     <string name="click_to_restart_camera_last_restart_at">Restart camera (last at %s)</string>
+    <string name="donate">Donate</string>
+    <string name="donate_1">Donate 1$</string>
+    <string name="donate_2">Donate 2$</string>
+    <string name="donate_5">Donate 5$</string>
+    <string name="donate_10">Donate 10$</string>
+    <string name="donate_20">Donate 20$</string>
+    <string name="donate_50">Donate 50$</string>
+    <string name="donate_100">Donate 100$</string>
+    <string name="donate_200">Donate 200$</string>
+    <string name="choose_the_amount_to_donate">Choose the amount to donate</string>
+    <string name="thank_you_for_your_donation">Thank you for your donation :-)</string>
 </resources>
