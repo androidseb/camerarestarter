@@ -219,17 +219,11 @@ public class MainActivity extends AppCompatActivity {
 	public static void restartButtonActionImpl(final Context _context) throws Throwable {
 		runRestartCameraShellCommand();
 		if (MainActivity.isAutoCameraLaunchEnabled(_context)) {
-			final Intent i = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-			final PackageManager pm = _context.getPackageManager();
-			final ResolveInfo mInfo = pm.resolveActivity(i, 0);
-
-			final Intent cameraStartIntent = new Intent();
-			cameraStartIntent.setComponent(new ComponentName(mInfo.activityInfo.packageName, mInfo.activityInfo.name));
-			cameraStartIntent.setAction(Intent.ACTION_MAIN);
-			cameraStartIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-			cameraStartIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-			_context.startActivity(cameraStartIntent);
+            final Intent cameraStartIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+            cameraStartIntent.setAction(Intent.ACTION_MAIN);
+            cameraStartIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+            cameraStartIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            _context.startActivity(cameraStartIntent);
 		}
 	}
 
