@@ -1,6 +1,6 @@
 USE AT YOUR OWN RISKS!!! This app requires your phone to be rooted, otherwise it will not work. If you don't know what a rooted phone is, ask Google :-)
 
-This app is meant for people encountering the error message \"can't connect to camera\". Usually when getting this error message, the only solution for using the camera again is to restart the phone.
+This app is meant for people encountering the error message "can't connect to camera". Usually when getting this error message, the only solution for using the camera again is to restart the phone.
 
 This app allows to restart the camera individually without needing to restart the phone.
 
