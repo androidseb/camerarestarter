@@ -8,8 +8,8 @@ android {
         applicationId "com.exlyo.camerarestarter"
         minSdkVersion 9
         targetSdkVersion 25
-        versionCode 15
-        versionName "4.0.2"
+        versionCode 17
+        versionName "4.0.3"
     }
     buildTypes {
         release {
