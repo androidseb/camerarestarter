@@ -26,10 +26,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.exlyo.camerarestarter.privatedata.AppPrivateData;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
+//import com.google.android.gms.ads.AdRequest;
+//import com.google.android.gms.ads.AdSize;
+//import com.google.android.gms.ads.AdView;
+//import com.google.android.gms.ads.MobileAds;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
 	private static final String PREF_KEY_AUTO_CAMERA_ACTION = "auto_camera_action";
 	private static final String PREF_KEY_SYSTEM_START_NOTIFICATION = "system_start_notification";
 
-	private AdView mAdView;
+	//private AdView mAdView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -125,29 +125,29 @@ public class MainActivity extends AppCompatActivity {
 					if (MainActivity.this.isFinishing()) {
 						return null;
 					}
-					MainActivity.this.runOnUiThread(new Runnable() {
-						@Override
-						public void run() {
-							if (MainActivity.this.isFinishing()) {
-								return;
-							}
-							adContainer.setVisibility(View.VISIBLE);
-							// Initialize the Mobile Ads SDK.
-							MobileAds.initialize(MainActivity.this, AppPrivateData.adMobAppId);
-							MobileAds.setAppMuted(true);
-							mAdView = new AdView(MainActivity.this);
-							mAdView.setAdSize(AdSize.SMART_BANNER);
-							mAdView.setAdUnitId(AppPrivateData.adUnitId);
-							adContainer.addView(mAdView,
-								new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-							// Create an ad request. Check your logcat output for the hashed device ID to
-							// get test ads on a physical device. e.g.
-							// "Use AdRequest.Builder.addTestDevice("ABCDEF012345") to get test ads on this device."
-							final AdRequest adRequest = new AdRequest.Builder().build();
-							// Start loading the ad in the background.
-							mAdView.loadAd(adRequest);
-						}
-					});
+                    //MainActivity.this.runOnUiThread(new Runnable() {
+                    //    @Override
+                    //    public void run() {
+                    //        if (MainActivity.this.isFinishing()) {
+                    //            return;
+                    //        }
+                    //        adContainer.setVisibility(View.VISIBLE);
+                    //        // Initialize the Mobile Ads SDK.
+                    //        MobileAds.initialize(MainActivity.this, AppPrivateData.adMobAppId);
+                    //        MobileAds.setAppMuted(true);
+                    //        mAdView = new AdView(MainActivity.this);
+                    //        mAdView.setAdSize(AdSize.SMART_BANNER);
+                    //        mAdView.setAdUnitId(AppPrivateData.adUnitId);
+                    //        adContainer.addView(mAdView,
+                    //            new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                    //        // Create an ad request. Check your logcat output for the hashed device ID to
+                    //        // get test ads on a physical device. e.g.
+                    //        // "Use AdRequest.Builder.addTestDevice("ABCDEF012345") to get test ads on this device."
+                    //        final AdRequest adRequest = new AdRequest.Builder().build();
+                    //        // Start loading the ad in the background.
+                    //        mAdView.loadAd(adRequest);
+                    //    }
+                    //});
 					return null;
 				}
 			}.execute();
@@ -356,21 +356,21 @@ public class MainActivity extends AppCompatActivity {
 		}
 	}
 
-	@Override
-	protected void onPause() {
-		if (mAdView != null) {
-			mAdView.pause();
-		}
-		super.onPause();
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-		if (mAdView != null) {
-			mAdView.resume();
-		}
-	}
+    //@Override
+    //protected void onPause() {
+    //    if (mAdView != null) {
+    //        mAdView.pause();
+    //    }
+    //    super.onPause();
+    //}
+    //
+    //@Override
+    //protected void onResume() {
+    //    super.onResume();
+    //    if (mAdView != null) {
+    //        mAdView.resume();
+    //    }
+    //}
 
 	@Override
 	protected void onActivityResult(final int _requestCode, final int _resultCode, final Intent _data) {
@@ -378,13 +378,13 @@ public class MainActivity extends AppCompatActivity {
 		super.onActivityResult(_requestCode, _resultCode, _data);
 	}
 
-	@Override
-	protected void onDestroy() {
-		if (mAdView != null) {
-			mAdView.destroy();
-		}
-		super.onDestroy();
-	}
+    //@Override
+    //protected void onDestroy() {
+    //    if (mAdView != null) {
+    //        mAdView.destroy();
+    //    }
+    //    super.onDestroy();
+    //}
 
 	public static void logEvent(final Context _context, final String _eventName) {
 		if (!AppPrivateData.hasFireBaseData) {
