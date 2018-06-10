@@ -304,7 +304,9 @@ public class MainActivity extends AppCompatActivity {
 				//Command to kill the process using the file "/system/bin/mediaserver" under the "media" user name
 				createKillCommandForSystemBin("media", "mediaserver")
 					//Command to kill the process using the file "/system/bin/cameraserver" under the "camera" user name
-					+ createKillCommandForSystemBin("camera", "cameraserver");
+					+ createKillCommandForSystemBin("camera", "cameraserver")
+						//Command to kill the process using the file "/system/bin/mm-qcamera-daemon" under the "camera" user name
+						+ createKillCommandForSystemBin("camera", "mm-qcamera-daemon");
 			os.writeBytes(command + "\n");
 		} finally {
 			if (os != null) {
